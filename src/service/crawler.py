@@ -41,7 +41,7 @@ class CrawlerService:
                 llm_config=self.llm_service.llm_config,
                 **extraction_config
             )
-            
+            # self.logger.info(f"创建提取策略: {extraction_config}")
             # 创建爬虫配置
             if config is None:
                 config = CrawlerRunConfig(extraction_strategy=strategy)
@@ -52,7 +52,7 @@ class CrawlerService:
             async with AsyncWebCrawler() as crawler:
                 self.logger.info(f"开始爬取URL: {url}")
                 result = await crawler.arun(url, config=config)
-                
+                # self.logger.info(f"爬取完成: {result.markdown}")
                 if result.success:
                     self.logger.info(f"爬取成功: {url}")
                     return result.extracted_content

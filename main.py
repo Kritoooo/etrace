@@ -11,6 +11,7 @@ from typing import Optional
 from src.config import Settings
 from src.service import CrawlerService
 from src.strategy import GitHubStrategy
+from src.model.github import ModelType
 from src.util import setup_logging, get_logger
 
 
@@ -38,7 +39,7 @@ class ETraceApp:
         """爬取GitHub用户的仓库信息"""
         self.logger.info(f"开始爬取用户 {username} 的仓库信息")
         
-        strategy = GitHubStrategy(self.crawler_service, model_type="activity")
+        strategy = GitHubStrategy(self.crawler_service, model_type=ModelType.ACTIVITY)
         result = await strategy.crawl_user_repositories(username)
         
         if result:
@@ -53,7 +54,7 @@ class ETraceApp:
         """爬取GitHub用户资料"""
         self.logger.info(f"开始爬取用户 {username} 的资料信息")
         
-        strategy = GitHubStrategy(self.crawler_service, model_type="user")
+        strategy = GitHubStrategy(self.crawler_service, model_type=ModelType.USER_PROFILE)
         result = await strategy.crawl_user_profile(username)
         
         if result:
@@ -64,7 +65,7 @@ class ETraceApp:
             
         return result
     
-    async def crawl_custom_url(self, url: str, model_type: str = "activity") -> Optional[list]:
+    async def crawl_custom_url(self, url: str, model_type: ModelType = ModelType.ACTIVITY) -> Optional[list]:
         """爬取自定义URL"""
         self.logger.info(f"开始爬取URL: {url}")
         
@@ -103,9 +104,7 @@ async def main():
     # 创建应用实例
     app = ETraceApp()
     
-    # 爬取GitHub用户仓库（对应原始demo的功能）
-    url = "https://github.com/Kritoooo?tab=repositories"
-    result = await app.crawl_custom_url(url, model_type="activity")
+    result = await app.crawl_github_profile("Kritoooo")
     
     if result:
         print("提取的内容:")
