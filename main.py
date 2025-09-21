@@ -39,7 +39,7 @@ class ETraceApp:
         """爬取GitHub用户的仓库信息"""
         self.logger.info(f"开始爬取用户 {username} 的仓库信息")
         
-        strategy = GitHubStrategy(self.crawler_service, model_type=ModelType.ACTIVITY)
+        strategy = GitHubStrategy(self.crawler_service, model_type=ModelType.REPOSITORY)
         result = await strategy.crawl_user_repositories(username)
         
         if result:
