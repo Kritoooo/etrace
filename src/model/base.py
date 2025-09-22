@@ -1,27 +1,7 @@
-from abc import ABC, abstractmethod
-from typing import Dict, Any, List
-from pydantic import BaseModel as PydanticBaseModel
+"""
+数据模型基类 - 纯粹的业务模型，专注于业务逻辑
+"""
+from pydantic import BaseModel
 
-
-class BaseModel(PydanticBaseModel, ABC):
-    """数据模型基类"""
-    
-    @classmethod
-    @abstractmethod
-    def get_extraction_instruction(cls) -> str:
-        """获取提取指令"""
-        pass
-    
-    @classmethod
-    def get_schema_dict(cls) -> Dict[str, Any]:
-        """获取模型的JSON schema"""
-        return cls.model_json_schema()
-    
-    @classmethod
-    def create_extraction_config(cls) -> Dict[str, Any]:
-        """创建提取配置"""
-        return {
-            "schema": cls.get_schema_dict(),
-            "instruction": cls.get_extraction_instruction(),
-            "extraction_type": "schema"
-        }
+# 直接使用Pydantic BaseModel作为业务模型基类
+# 业务模型不应该包含抽取相关的功能
