@@ -102,7 +102,9 @@ class Repository(BaseModel):
     @classmethod
     def validate_language(cls, v):
         """验证编程语言"""
-        if isinstance(v, str) and v:
+        if isinstance(v, str):
+            if not v or v.strip() == '':
+                return None  # 空字符串返回None
             # 尝试匹配已知语言
             v_upper = v.upper()
             for lang in RepositoryLanguage:

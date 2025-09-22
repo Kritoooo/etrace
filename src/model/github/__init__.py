@@ -48,11 +48,11 @@ from .extraction import (
 
 # 导入 Schema 映射工具
 from .schema_mapping import (
-    get_business_model,
+    get_domain_model,
     get_extraction_schema,
     get_extraction_instruction,
-    convert_extraction_to_business,
-    BUSINESS_MODEL_MAP,
+    convert_extraction_to_domain,
+    DOMAIN_MODEL_MAP,
     EXTRACTION_SCHEMA_MAP,
     SIMPLE_EXTRACTION_MAP
 )
@@ -81,7 +81,7 @@ __all__ = [
     'UserProfileExtractionSchema', 'EXTRACTION_SCHEMAS',
     
     # Schema 映射工具
-    'get_business_model', 'get_extraction_schema', 'get_extraction_instruction',
-    'convert_extraction_to_business', 'BUSINESS_MODEL_MAP', 'EXTRACTION_SCHEMA_MAP',
+    'get_domain_model', 'get_extraction_schema', 'get_extraction_instruction',
+    'convert_extraction_to_domain', 'DOMAIN_MODEL_MAP', 'EXTRACTION_SCHEMA_MAP',
     'SIMPLE_EXTRACTION_MAP'
 ]

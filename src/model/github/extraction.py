@@ -1,28 +1,19 @@
-"""
-GitHub 数据抽取专用的简化 Schema
-仅包含基本数据类型，专门用于 LLM 数据抽取
-与业务数据模型分离，保持简单高效
-"""
 from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, Field
 
 
 class BaseExtractionSchema(BaseModel):
-    """抽取 Schema 基类"""
     
     @classmethod
     def get_extraction_instruction(cls) -> str:
-        """获取提取指令 - 子类必须实现"""
         raise NotImplementedError("子类必须实现 get_extraction_instruction 方法")
     
     @classmethod
     def get_schema_dict(cls) -> Dict[str, Any]:
-        """获取模型的JSON schema"""
         return cls.model_json_schema()
     
     @classmethod
     def create_extraction_config(cls) -> Dict[str, Any]:
-        """创建提取配置"""
         return {
             "schema": cls.get_schema_dict(),
             "instruction": cls.get_extraction_instruction(),
@@ -34,32 +25,26 @@ class BaseExtractionSchema(BaseModel):
 class RepositoryExtractionSchema(BaseExtractionSchema):
     """仓库数据抽取 Schema - 简化版本"""
     
-    # 基础信息
     name: str = Field(..., description="仓库名称")
     full_name: str = Field(..., description="完整名称（owner/repo）")
     description: Optional[str] = Field(None, description="仓库描述")
     url: str = Field(..., description="仓库URL")
     
-    # 所有者信息
     owner_username: str = Field(..., description="所有者用户名")
     owner_type: str = Field("User", description="所有者类型（User/Organization）")
     
-    # 技术信息 - 使用字符串类型
     language: Optional[str] = Field(None, description="主要编程语言")
     topics: List[str] = Field(default_factory=list, description="话题标签")
     
-    # 统计信息 - 使用字符串避免类型转换问题
     stars: str = Field("0", description="星标数")
     forks: str = Field("0", description="分叉数")
     watchers: str = Field("0", description="关注者数")
     open_issues: str = Field("0", description="开放问题数")
     
-    # 时间信息
     created_at: str = Field(..., description="创建时间")
     updated_at: str = Field(..., description="最后更新时间")
     pushed_at: Optional[str] = Field(None, description="最后推送时间")
     
-    # 仓库状态
     private: str = Field("false", description="是否私有（true/false）")
     fork: str = Field("false", description="是否为分叉（true/false）")
     archived: str = Field("false", description="是否已归档（true/false）")
