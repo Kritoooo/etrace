@@ -1,6 +1,6 @@
 """
 模型类型到抽取 Schema 的映射
-提供业务模型和抽取 Schema 之间的转换
+提供领域模型和抽取 Schema 之间的转换
 """
 from typing import Type
 from .enums import ModelType
@@ -12,11 +12,11 @@ from .extraction import (
 from .repository import Repository
 from .user import UserProfile
 from .event import Event
-# 移除ExtractableModel，业务模型不再有抽取功能
+# 移除ExtractableModel，领域模型不再有抽取功能
 
 
-# 业务模型映射
-BUSINESS_MODEL_MAP = {
+# 领域模型映射
+DOMAIN_MODEL_MAP = {
     ModelType.REPOSITORY: Repository,
     ModelType.USER_PROFILE: UserProfile,
     ModelType.EVENT: Event,
@@ -35,11 +35,11 @@ SIMPLE_EXTRACTION_MAP = {
 }
 
 
-def get_business_model(model_type: ModelType) -> Type:
-    """获取业务数据模型类"""
-    if model_type not in BUSINESS_MODEL_MAP:
+def get_domain_model(model_type: ModelType) -> Type:
+    """获取领域数据模型类"""
+    if model_type not in DOMAIN_MODEL_MAP:
         raise ValueError(f"不支持的模型类型: {model_type}")
-    return BUSINESS_MODEL_MAP[model_type]
+    return DOMAIN_MODEL_MAP[model_type]
 
 
 def get_extraction_schema(model_type: ModelType, simple: bool = False) -> Type[BaseExtractionSchema]:
@@ -63,8 +63,8 @@ def get_extraction_instruction(model_type: ModelType, simple: bool = False) -> s
     return schema_class.get_extraction_instruction()
 
 
-def convert_extraction_to_business(extraction_data: dict, model_type: ModelType) -> dict:
-    """将抽取数据转换为业务数据格式
+def convert_extraction_to_domain(extraction_data: dict, model_type: ModelType) -> dict:
+    """将抽取数据转换为领域数据格式
     
     这个函数可以在后续实现数据转换逻辑
     目前简单返回原数据
@@ -76,11 +76,11 @@ def convert_extraction_to_business(extraction_data: dict, model_type: ModelType)
 
 # 导出所有映射和函数
 __all__ = [
-    'BUSINESS_MODEL_MAP',
+    'DOMAIN_MODEL_MAP',
     'EXTRACTION_SCHEMA_MAP', 
     'SIMPLE_EXTRACTION_MAP',
-    'get_business_model',
+    'get_domain_model',
     'get_extraction_schema',
     'get_extraction_instruction',
-    'convert_extraction_to_business'
+    'convert_extraction_to_domain'
 ]
