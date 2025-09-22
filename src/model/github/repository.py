@@ -3,8 +3,7 @@ GitHub 仓库相关数据模型
 """
 from typing import Optional, List, Dict
 from datetime import datetime
-from pydantic import Field, field_validator, HttpUrl
-from ..base import BaseModel
+from pydantic import BaseModel, Field, field_validator, HttpUrl
 from .enums import RepositoryType, RepositoryLanguage
 
 
@@ -28,7 +27,7 @@ class RepositoryLicense(BaseModel):
 class RepositoryStats(BaseModel):
     """仓库统计信息"""
     stars: int = Field(0, description="星标数")
-    forks: int = Field(0, description="分支数")
+    forks: int = Field(0, description="派生数")
     watchers: int = Field(0, description="关注者数")
     open_issues: int = Field(0, description="开放的问题数")
     open_pull_requests: int = Field(0, description="开放的PR数")
@@ -134,17 +133,6 @@ class Repository(BaseModel):
                 return datetime.now()
         return v
     
-    @classmethod
-    def get_extraction_instruction(cls) -> str:
-        return """从GitHub仓库页面中提取详细信息，包括：
-        - 仓库基本信息（名称、描述、URL等）
-        - 所有者信息
-        - 统计数据（星标、分支、关注者等）
-        - 技术信息（主要语言、大小、默认分支）
-        - 许可证信息
-        - 话题标签
-        - 时间信息（创建、更新、推送时间）
-        请以JSON格式返回仓库信息。"""
     
     def is_active(self, days: int = 30) -> bool:
         """检查仓库是否在指定天数内活跃"""

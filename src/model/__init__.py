@@ -1,31 +1,32 @@
 from .github import (
     # 主要模型
-    Activity, Repository, UserProfile,
+    Event, Repository, UserProfile,
     # 枚举
-    ModelType, ActivityType, RepositoryType, RepositoryLanguage,
+    ModelType, RepositoryType, RepositoryLanguage,
     # 子模型
-    ActivityActor, ActivityTarget, ActivityPayload, ActivityStats,
     RepositoryOwner, RepositoryLicense, RepositoryStats, RepositoryTopics,
     UserSocialLinks, UserStats, UserOrganization, UserSearchResult,
-    # 遗留模型
-    LegacyActivity, LegacyRepository, LegacyUserProfile
+    # Event相关模型
+    EventActor, EventRepo, EventPayload, PushEventPayload, WatchEventPayload,
+    CreateEventPayload, ForkEventPayload, IssuesEventPayload, PullRequestEventPayload
 )
-from .base import BaseModel as DataModel
+# 业务模型直接使用Pydantic BaseModel，专注于业务逻辑
+from pydantic import BaseModel as DataModel
 
 # 单独导入各模块以支持更精细的导入
 from . import github
 
 __all__ = [
     # 主要模型
-    "Activity", "Repository", "UserProfile",
+    "Event", "Repository", "UserProfile",
     # 枚举
-    "ModelType", "ActivityType", "RepositoryType", "RepositoryLanguage",
+    "ModelType", "RepositoryType", "RepositoryLanguage",
     # 子模型
-    "ActivityActor", "ActivityTarget", "ActivityPayload", "ActivityStats",
     "RepositoryOwner", "RepositoryLicense", "RepositoryStats", "RepositoryTopics", 
     "UserSocialLinks", "UserStats", "UserOrganization", "UserSearchResult",
-    # 遗留模型
-    "LegacyActivity", "LegacyRepository", "LegacyUserProfile",
+    # Event相关模型
+    "EventActor", "EventRepo", "EventPayload", "PushEventPayload", "WatchEventPayload",
+    "CreateEventPayload", "ForkEventPayload", "IssuesEventPayload", "PullRequestEventPayload",
     # 基础模型
     "DataModel",
     # 模块

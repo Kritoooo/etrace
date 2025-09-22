@@ -30,39 +30,6 @@ class BaseExtractionSchema(BaseModel):
         }
 
 
-class ActivityExtractionSchema(BaseExtractionSchema):
-    """活动数据抽取 Schema - 简化版本"""
-    
-    # 基础信息 - 只保留字符串类型
-    type: str = Field(..., description="活动类型（如：push, pull_request, issue, star, fork等）")
-    timestamp: str = Field(..., description="活动时间")
-    
-    # 执行者信息
-    actor_username: str = Field(..., description="执行者用户名")
-    actor_avatar: Optional[str] = Field(None, description="执行者头像URL")
-    
-    # 仓库信息
-    repository_name: str = Field(..., description="仓库名称（格式：owner/repo）")
-    repository_url: str = Field(..., description="仓库URL")
-    repository_description: Optional[str] = Field(None, description="仓库描述")
-    
-    # 活动详情 - 使用简单字符串
-    action_description: str = Field(..., description="活动描述")
-    commit_count: Optional[str] = Field(None, description="提交数量（如果适用）")
-    branch_name: Optional[str] = Field(None, description="分支名称（如果适用）")
-    
-    @classmethod
-    def get_extraction_instruction(cls) -> str:
-        return """从GitHub活动页面中提取用户活动信息。
-        重点关注：
-        1. 活动类型（push、pull_request、issue、star、fork等）
-        2. 活动时间
-        3. 执行者信息
-        4. 相关仓库信息
-        5. 活动的具体描述
-        
-        请返回JSON格式的活动列表。"""
-
 
 class RepositoryExtractionSchema(BaseExtractionSchema):
     """仓库数据抽取 Schema - 简化版本"""
@@ -158,26 +125,10 @@ class UserProfileExtractionSchema(BaseExtractionSchema):
         请返回JSON格式的用户信息。"""
 
 
-class SimpleActivitySchema(BaseExtractionSchema):
-    """极简活动抽取 Schema - 用于快速提取"""
-    repositories: str = Field(..., description="仓库名称")
-    date: str = Field(..., description="活动日期")
-    activity_type: str = Field(..., description="活动类型")
-    description: str = Field(..., description="活动描述")
-    
-    @classmethod
-    def get_extraction_instruction(cls) -> str:
-        return """从GitHub页面中提取简单的活动信息。
-        每个活动包含：仓库名称、日期、活动类型、描述。
-        请返回JSON格式的活动列表。"""
-
-
 # 抽取 Schema 映射
 EXTRACTION_SCHEMAS = {
-    "activity": ActivityExtractionSchema,
     "repository": RepositoryExtractionSchema, 
     "user_profile": UserProfileExtractionSchema,
-    "simple_activity": SimpleActivitySchema,
 }
 
 

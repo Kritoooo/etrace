@@ -10,7 +10,7 @@ __author__ = "Your Name"
 from .config import Settings
 from .service import CrawlerService, LLMService
 from .strategy import GitHubStrategy, BaseStrategy
-from .model import Activity, Repository, UserProfile
+from .model import Event, Repository, UserProfile
 from .util import get_logger, setup_logging
 
 __all__ = [
@@ -19,7 +19,7 @@ __all__ = [
     "LLMService",
     "GitHubStrategy",
     "BaseStrategy", 
-    "Activity",
+    "Event",
     "Repository",
     "UserProfile",
     "get_logger",

@@ -24,6 +24,7 @@ class Settings(BaseModel):
     crawler: CrawlerConfig
     output_dir: str = Field(default="output", description="输出目录")
     log_level: str = Field(default="INFO", description="日志级别")
+    github_token: str = Field(default="", description="GitHub Token")
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -39,12 +40,15 @@ class Settings(BaseModel):
             apply_chunking=os.getenv("APPLY_CHUNKING", "true").lower() == "true",
             verbose=os.getenv("VERBOSE", "true").lower() == "true"
         )
+
+        github_token = os.getenv("GITHUB_TOKEN", "")
         
         return cls(
             llm=llm_config,
             crawler=crawler_config,
             output_dir=os.getenv("OUTPUT_DIR", "output"),
-            log_level=os.getenv("LOG_LEVEL", "INFO")
+            log_level=os.getenv("LOG_LEVEL", "INFO"),
+            github_token=github_token
         )
 
     @classmethod

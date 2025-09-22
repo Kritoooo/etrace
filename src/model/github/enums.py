@@ -6,24 +6,9 @@ from enum import StrEnum, auto
 
 class ModelType(StrEnum):
     """数据模型类型枚举"""
-    ACTIVITY = auto()
     REPOSITORY = auto()
     USER_PROFILE = auto()
-
-
-class ActivityType(StrEnum):
-    """GitHub 活动类型枚举"""
-    PUSH = auto()
-    PULL_REQUEST = auto()
-    ISSUE = auto()
-    ISSUE_COMMENT = auto()
-    CREATE_REPO = auto()
-    STAR = auto()
-    FORK = auto()
-    WATCH = auto()
-    COMMIT = auto()
-    RELEASE = auto()
-    UNKNOWN = auto()
+    EVENT = auto()
 
 
 class RepositoryType(StrEnum):

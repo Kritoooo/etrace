@@ -3,8 +3,7 @@ GitHub 用户相关数据模型
 """
 from typing import Optional, List
 from datetime import datetime
-from pydantic import Field, field_validator, HttpUrl
-from ..base import BaseModel
+from pydantic import BaseModel, Field, field_validator, HttpUrl
 
 
 class UserSocialLinks(BaseModel):
@@ -98,17 +97,6 @@ class UserProfile(BaseModel):
             except ValueError:
                 return datetime.now()
         return v
-    
-    @classmethod
-    def get_extraction_instruction(cls) -> str:
-        return """从GitHub用户资料页面中提取用户信息，包括：
-        - 基本信息（用户名、显示名称、头像、简介等）
-        - 位置和公司信息
-        - 统计数据（关注者、关注数、仓库数等）
-        - 社交链接（网站、博客、Twitter等）
-        - 所属组织信息
-        - 账户创建和更新时间
-        请以JSON格式返回用户信息。"""
     
     def get_activity_level(self) -> str:
         """获取用户活跃度等级"""

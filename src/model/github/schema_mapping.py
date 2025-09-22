@@ -5,47 +5,44 @@
 from typing import Type
 from .enums import ModelType
 from .extraction import (
-    ActivityExtractionSchema,
+    BaseExtractionSchema,
     RepositoryExtractionSchema,
-    UserProfileExtractionSchema,
-    SimpleActivitySchema
+    UserProfileExtractionSchema
 )
-from .activity import Activity
 from .repository import Repository
 from .user import UserProfile
-from ..base import BaseModel
+from .event import Event
+# 移除ExtractableModel，业务模型不再有抽取功能
 
 
 # 业务模型映射
 BUSINESS_MODEL_MAP = {
-    ModelType.ACTIVITY: Activity,
     ModelType.REPOSITORY: Repository,
     ModelType.USER_PROFILE: UserProfile,
+    ModelType.EVENT: Event,
 }
 
 # 抽取 Schema 映射
 EXTRACTION_SCHEMA_MAP = {
-    ModelType.ACTIVITY: ActivityExtractionSchema,
     ModelType.REPOSITORY: RepositoryExtractionSchema,
     ModelType.USER_PROFILE: UserProfileExtractionSchema,
 }
 
 # 简化抽取 Schema 映射（用于快速抽取）
 SIMPLE_EXTRACTION_MAP = {
-    ModelType.ACTIVITY: SimpleActivitySchema,
-    ModelType.REPOSITORY: RepositoryExtractionSchema,  # 仓库使用标准版本
-    ModelType.USER_PROFILE: UserProfileExtractionSchema,  # 用户使用标准版本
+    ModelType.REPOSITORY: RepositoryExtractionSchema,
+    ModelType.USER_PROFILE: UserProfileExtractionSchema,
 }
 
 
-def get_business_model(model_type: ModelType) -> Type[BaseModel]:
+def get_business_model(model_type: ModelType) -> Type:
     """获取业务数据模型类"""
     if model_type not in BUSINESS_MODEL_MAP:
         raise ValueError(f"不支持的模型类型: {model_type}")
     return BUSINESS_MODEL_MAP[model_type]
 
 
-def get_extraction_schema(model_type: ModelType, simple: bool = False) -> Type[BaseModel]:
+def get_extraction_schema(model_type: ModelType, simple: bool = False) -> Type[BaseExtractionSchema]:
     """获取抽取 Schema 类
     
     Args:
