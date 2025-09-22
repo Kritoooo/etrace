@@ -1,7 +1,3 @@
-"""
-GitHub API 服务
-提供直接的 GitHub API 访问功能，支持获取事件等数据
-"""
 import asyncio
 from typing import List, Optional, Dict, Any
 import httpx
@@ -11,7 +7,6 @@ from ..util.logger import get_logger
 
 
 class GitHubAPIService:
-    """GitHub API 服务类"""
     
     def __init__(self, settings: Settings):
         self.settings = settings
@@ -23,7 +18,6 @@ class GitHubAPIService:
             "User-Agent": "ETrace-GitHub-Crawler/1.0"
         }
         
-        # 如果配置了 GitHub Token，添加到请求头
         if hasattr(settings, 'github_token') and settings.github_token:
             self.headers["Authorization"] = f"token {settings.github_token}"
     

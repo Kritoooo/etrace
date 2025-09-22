@@ -1,7 +1,3 @@
-"""
-GitHub Event 数据模型
-基于 GitHub API Events 接口返回的 JSON 数据结构
-"""
 from datetime import datetime
 from typing import Optional, Dict, Any, Union
 from pydantic import BaseModel, Field
@@ -40,7 +36,6 @@ class PushEventPayload(EventPayload):
 
 
 class WatchEventPayload(EventPayload):
-    """Watch事件载荷(Star操作)"""
     action: str = "started"
 
 
@@ -86,7 +81,6 @@ class Event(BaseModel):
     
     @classmethod
     def from_api_response(cls, data: Dict[str, Any]) -> "Event":
-        # 根据事件类型解析不同的 payload
         payload_data = data.get("payload", {})
         event_type = data.get("type", "")
         

@@ -5,7 +5,6 @@ from ..model.base import BaseModel
 
 
 class LLMService:
-    """LLM服务封装类"""
     
     def __init__(self, settings: Settings):
         self.settings = settings
@@ -13,7 +12,6 @@ class LLMService:
     
     @property
     def llm_config(self) -> LLMConfig:
-        """获取LLM配置"""
         if self._llm_config is None:
             self._llm_config = LLMConfig(
                 provider=self.settings.llm.provider,
@@ -23,7 +21,6 @@ class LLMService:
         return self._llm_config
     
     def create_extraction_config(self, model_class: Type[BaseModel]) -> Dict[str, Any]:
-        """为指定模型创建提取配置"""
         base_config = model_class.create_extraction_config()
         
         return {
