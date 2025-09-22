@@ -41,7 +41,6 @@ from .event import (
 # 导入抽取 Schema
 from .extraction import (
     BaseExtractionSchema,
-    RepositoryExtractionSchema,
     UserProfileExtractionSchema,
     EXTRACTION_SCHEMAS
 )
@@ -77,8 +76,7 @@ __all__ = [
     'CreateEventPayload', 'ForkEventPayload', 'IssuesEventPayload', 'PullRequestEventPayload',
     
     # 抽取 Schema
-    'BaseExtractionSchema', 'RepositoryExtractionSchema', 
-    'UserProfileExtractionSchema', 'EXTRACTION_SCHEMAS',
+    'BaseExtractionSchema', 'UserProfileExtractionSchema', 'EXTRACTION_SCHEMAS',
     
     # Schema 映射工具
     'get_domain_model', 'get_extraction_schema', 'get_extraction_instruction',

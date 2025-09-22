@@ -94,6 +94,19 @@ class DataSerializer:
         return [model.model_dump() for model in models]
     
     @staticmethod
+    def convert_pydantic_to_dict(model: BaseModel) -> dict:
+        """
+        将 Pydantic 模型转换为字典
+        
+        Args:
+            model: Pydantic 模型实例
+            
+        Returns:
+            字典
+        """
+        return model.model_dump()
+    
+    @staticmethod
     def format_data_for_display(data: Any, max_items: int = 10) -> str:
         """
         格式化数据用于显示

@@ -8,7 +8,7 @@ from ..model.github.schema_mapping import (
     get_extraction_schema,
     get_extraction_instruction
 )
-from ..model.github.converters import SchemaToModelConverter, DataConverter
+from ..model.github.converters import SchemaToModelConverter
 from ..service import GitHubAPIService
 
 
@@ -110,11 +110,6 @@ class GitHubStrategy(BaseStrategy):
             
         return self._convert_to_models(processed_data)
     
-    async def crawl_user_repositories(self, username: str) -> Optional[List[Repository]]:
-        """爬取用户的仓库列表"""
-        url = f"https://github.com/{username}?tab=repositories"
-        self.model_type = ModelType.REPOSITORY
-        return await self.execute(url)
     
     async def crawl_user_activity(self, username: str) -> Optional[List[Event]]:
         """爬取用户活动"""
@@ -128,11 +123,6 @@ class GitHubStrategy(BaseStrategy):
         self.model_type = ModelType.USER_PROFILE
         return await self.execute(url)
     
-    async def crawl_repository_info(self, owner: str, repo: str) -> Optional[List[Repository]]:
-        """爬取仓库信息"""
-        url = f"https://github.com/{owner}/{repo}"
-        self.model_type = ModelType.REPOSITORY
-        return await self.execute(url)
     
     async def get_user_events_via_api(self, username: str, event_type: str = "public", per_page: int = 30) -> Optional[List[Event]]:
         """
@@ -184,14 +174,29 @@ class GitHubStrategy(BaseStrategy):
         """
         return await self.github_api_service.get_organization_events(org, per_page=per_page)
     
-    async def get_public_events_via_api(self, per_page: int = 30) -> Optional[List[Event]]:
+    async def get_user_repositories_via_api(self, username: str, per_page: int = 30, page: int = 1) -> Optional[List[Repository]]:
         """
-        通过 API 获取公共事件
+        通过 API 获取用户仓库列表
         
         Args:
+            username: GitHub 用户名
             per_page: 每页数量
+            page: 页码
             
         Returns:
-            事件列表或None
+            仓库列表或None
         """
-        return await self.github_api_service.get_public_events(per_page=per_page)
+        return await self.github_api_service.get_user_repositories(username, per_page=per_page, page=page)
+    
+    async def get_repository_details_via_api(self, owner: str, repo: str) -> Optional[Repository]:
+        """
+        通过 API 获取仓库详细信息
+        
+        Args:
+            owner: 仓库所有者
+            repo: 仓库名称
+            
+        Returns:
+            仓库详细信息或None
+        """
+        return await self.github_api_service.get_repository_details(owner, repo)

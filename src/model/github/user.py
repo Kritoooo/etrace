@@ -21,9 +21,6 @@ class UserStats(BaseModel):
     following: int = Field(0, description="关注数量")
     public_repos: int = Field(0, description="公开仓库数量")
     public_gists: int = Field(0, description="公开Gist数量")
-    private_repos: int = Field(0, description="私有仓库数量")
-    owned_private_repos: int = Field(0, description="拥有的私有仓库数量")
-    total_private_repos: int = Field(0, description="总私有仓库数量")
     collaborators: int = Field(0, description="协作者数量")
     
     def influence_score(self) -> float:

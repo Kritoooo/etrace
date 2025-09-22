@@ -15,8 +15,6 @@ class DataConverter:
         """将抽取数据转换为领域模型数据格式"""
         if model_type == ModelType.USER_PROFILE:
             return UserProfileConverter.convert(data)
-        elif model_type == ModelType.REPOSITORY:
-            return RepositoryConverter.convert(data)
         elif model_type == ModelType.EVENT:
             return EventConverter.convert(data)
         else:
@@ -59,9 +57,6 @@ class UserProfileConverter:
                 'following': int(data.get('following', '0') or '0'),
                 'public_repos': int(data.get('public_repos', '0') or '0'),
                 'public_gists': int(data.get('public_gists', '0') or '0'),
-                'private_repos': 0,
-                'owned_private_repos': 0,
-                'total_private_repos': 0,
                 'collaborators': 0
             },
             'html_url': f"https://github.com/{username}",
@@ -69,71 +64,6 @@ class UserProfileConverter:
         }
 
 
-class RepositoryConverter:
-    """仓库数据转换器"""
-    
-    @staticmethod
-    def convert(data: Dict[str, Any]) -> Dict[str, Any]:
-        """转换仓库数据"""
-        # 处理URL字段 - 确保不为空
-        html_url = data.get('html_url', '') or data.get('url', '') or 'https://github.com/unknown'
-        clone_url = data.get('clone_url', '') or html_url
-        
-        # 处理owner信息
-        owner_data = data.get('owner', {})
-        owner_login = owner_data.get('login', '') or data.get('owner_username', '') or 'unknown'
-        owner_avatar_url = owner_data.get('avatar_url', '') or None
-        owner_html_url = owner_data.get('html_url', '') or f"https://github.com/{owner_login}"
-        
-        # 处理语言字段
-        language = data.get('language', '') or None
-        if language == '':
-            language = None
-        
-        return {
-            'id': str(data.get('id', hash(data.get('name', 'unknown')))),
-            'node_id': data.get('node_id', f"R_{data.get('id', hash(data.get('name', 'unknown')))}"),
-            'name': data.get('name', ''),
-            'full_name': data.get('full_name', data.get('name', '')),
-            'description': data.get('description', ''),
-            'private': data.get('private', False),
-            'url': html_url,  # 添加missing url字段
-            'html_url': html_url,
-            'clone_url': clone_url if clone_url != 'https://github.com/unknown' else None,
-            'created_at': data.get('created_at', datetime.now()),
-            'updated_at': data.get('updated_at', datetime.now()),
-            'pushed_at': data.get('pushed_at', datetime.now()),
-            'size': data.get('size', 0),
-            'stargazers_count': data.get('stargazers_count', int(str(data.get('stars', '0')).replace(',', '') or '0')),
-            'watchers_count': data.get('watchers_count', int(str(data.get('watchers', '0')).replace(',', '') or '0')),
-            'language': language,
-            'forks_count': data.get('forks_count', int(str(data.get('forks', '0')).replace(',', '') or '0')),
-            'archived': data.get('archived', False),
-            'disabled': data.get('disabled', False),
-            'open_issues_count': data.get('open_issues_count', 0),
-            'license': data.get('license'),
-            'allow_forking': data.get('allow_forking', True),
-            'is_template': data.get('is_template', False),
-            'visibility': data.get('visibility', 'public'),
-            'default_branch': data.get('default_branch', 'main'),
-            # 嵌套对象
-            'owner': {
-                'username': owner_login,  # 修正字段名
-                'login': owner_login,  # 保留login字段
-                'type': owner_data.get('type', 'User'),
-                'avatar_url': owner_avatar_url,
-                'html_url': owner_html_url
-            },
-            'topics': {'topics': data.get('topics', [])},  # 修正格式为RepositoryTopics
-            'stats': data.get('stats', {
-                'stargazers_count': data.get('stargazers_count', int(str(data.get('stars', '0')).replace(',', '') or '0')),
-                'watchers_count': data.get('watchers_count', int(str(data.get('watchers', '0')).replace(',', '') or '0')),
-                'forks_count': data.get('forks_count', int(str(data.get('forks', '0')).replace(',', '') or '0')),
-                'open_issues_count': data.get('open_issues_count', 0),
-                'network_count': data.get('network_count', 0),
-                'subscribers_count': data.get('subscribers_count', 0)
-            })
-        }
 
 
 class EventConverter:
