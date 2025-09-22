@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 import asyncio
@@ -40,6 +41,14 @@ app = FastAPI(
     description="GitHub 数据抽取 API 服务",
     version="1.0.0",
     lifespan=lifespan
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
