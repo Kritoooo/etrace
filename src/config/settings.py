@@ -28,7 +28,6 @@ class Settings(BaseModel):
 
     @classmethod
     def from_env(cls) -> "Settings":
-        """从环境变量加载配置"""
         llm_config = LLMConfig(
             provider=os.getenv("LLM_PROVIDER", "openai/deepseek-ai/DeepSeek-V3.1"),
             api_token=os.getenv("LLM_API_TOKEN", ""),
@@ -53,14 +52,12 @@ class Settings(BaseModel):
 
     @classmethod
     def from_file(cls, config_path: str) -> "Settings":
-        """从配置文件加载配置"""
         import json
         with open(config_path, 'r', encoding='utf-8') as f:
             config_data = json.load(f)
         return cls(**config_data)
 
     def to_file(self, config_path: str) -> None:
-        """保存配置到文件"""
         import json
         config_path = Path(config_path)
         config_path.parent.mkdir(parents=True, exist_ok=True)

@@ -1,17 +1,12 @@
-"""
-GitHub API 服务
-提供直接的 GitHub API 访问功能，支持获取事件等数据
-"""
 import asyncio
 from typing import List, Optional, Dict, Any
 import httpx
 from ..config import Settings
-from ..model.github import Event
+from ..model.github import Event, Repository
 from ..util.logger import get_logger
 
 
 class GitHubAPIService:
-    """GitHub API 服务类"""
     
     def __init__(self, settings: Settings):
         self.settings = settings
@@ -23,7 +18,6 @@ class GitHubAPIService:
             "User-Agent": "ETrace-GitHub-Crawler/1.0"
         }
         
-        # 如果配置了 GitHub Token，添加到请求头
         if hasattr(settings, 'github_token') and settings.github_token:
             self.headers["Authorization"] = f"token {settings.github_token}"
     
@@ -268,3 +262,106 @@ class GitHubAPIService:
             user_events[username] = events
         
         return user_events
+    
+    async def get_user_repositories(self, username: str, per_page: int = 30, page: int = 1) -> Optional[List[Repository]]:
+        """
+        获取用户的公共仓库列表
+        
+        Args:
+            username: GitHub 用户名
+            per_page: 每页数量，最大100
+            page: 页码
+            
+        Returns:
+            仓库列表或None
+        """
+        url = f"{self.base_url}/users/{username}/repos"
+        params = {
+            "per_page": min(per_page, 100),
+            "page": page
+        }
+        
+        try:
+            async with httpx.AsyncClient() as client:
+                self.logger.info(f"正在请求用户仓库: {url}")
+                
+                response = await client.get(
+                    url, 
+                    headers=self.headers, 
+                    params=params,
+                    timeout=30.0
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    self.logger.info(f"成功获取 {len(data)} 个仓库")
+                    
+                    repositories = []
+                    for repo_data in data:
+                        try:
+                            repository = Repository.from_api_response(repo_data)
+                            repositories.append(repository)
+                        except Exception as e:
+                            self.logger.warning(f"解析仓库数据失败: {str(e)}")
+                            continue
+                    
+                    return repositories
+                
+                elif response.status_code == 403:
+                    self.logger.error("API 请求被限制，可能需要认证或超出了速率限制")
+                elif response.status_code == 404:
+                    self.logger.error("用户未找到")
+                else:
+                    self.logger.error(f"API 请求失败: {response.status_code} - {response.text}")
+                
+                return None
+                
+        except Exception as e:
+            self.logger.error(f"请求用户仓库时发生异常: {str(e)}")
+            return None
+    
+    async def get_repository_details(self, owner: str, repo: str) -> Optional[Repository]:
+        """
+        获取仓库的详细信息
+        
+        Args:
+            owner: 仓库所有者
+            repo: 仓库名称
+            
+        Returns:
+            仓库详细信息或None
+        """
+        url = f"{self.base_url}/repos/{owner}/{repo}"
+        
+        try:
+            async with httpx.AsyncClient() as client:
+                self.logger.info(f"正在请求仓库详细信息: {url}")
+                
+                response = await client.get(
+                    url, 
+                    headers=self.headers,
+                    timeout=30.0
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    self.logger.info(f"成功获取仓库详细信息: {owner}/{repo}")
+                    
+                    try:
+                        return Repository.from_api_response(data)
+                    except Exception as e:
+                        self.logger.warning(f"解析仓库数据失败: {str(e)}")
+                        return None
+                
+                elif response.status_code == 403:
+                    self.logger.error("API 请求被限制，可能需要认证或超出了速率限制")
+                elif response.status_code == 404:
+                    self.logger.error(f"仓库未找到: {owner}/{repo}")
+                else:
+                    self.logger.error(f"API 请求失败: {response.status_code} - {response.text}")
+                
+                return None
+                
+        except Exception as e:
+            self.logger.error(f"请求仓库详细信息时发生异常: {str(e)}")
+            return None

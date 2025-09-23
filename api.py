@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
-"""
-ETrace API 服务
-提供简单的 REST API 接口
-"""
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 import asyncio
@@ -17,12 +14,10 @@ from src.model.github import ModelType
 from src.util import setup_logging, get_logger, DataSerializer
 
 
-# 请求模型
 class GitHubUserRequest(BaseModel):
     username: str
 
 
-# 响应模型
 class APIResponse(BaseModel):
     success: bool
     data: Optional[List[Dict[str, Any]]] = None
@@ -30,21 +25,17 @@ class APIResponse(BaseModel):
     count: int = 0
 
 
-# 全局应用实例
 app_instance = None
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # 启动时初始化
     global app_instance
     from main import ETraceApp
     app_instance = ETraceApp()
     yield
-    # 关闭时清理（如果需要）
 
 
-# 创建 FastAPI 应用
 app = FastAPI(
     title="ETrace API",
     description="GitHub 数据抽取 API 服务",
@@ -52,27 +43,31 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.get("/")
 async def root():
-    """根路径，返回 API 信息"""
     return {"message": "ETrace API 服务正在运行", "version": "1.0.0"}
 
 
 @app.get("/health")
 async def health():
-    """健康检查"""
     return {"status": "healthy"}
 
 
 @app.post("/github/profile", response_model=APIResponse)
 async def get_github_profile(request: GitHubUserRequest):
-    """获取 GitHub 用户资料"""
     try:
         result = await app_instance.crawl_github_profile(request.username)
         
         if result:
-            # 转换为可序列化的格式
             serialized_data = DataSerializer.serialize_for_json(result)
             return APIResponse(
                 success=True,
@@ -92,12 +87,10 @@ async def get_github_profile(request: GitHubUserRequest):
 
 @app.post("/github/repositories", response_model=APIResponse)
 async def get_github_repositories(request: GitHubUserRequest):
-    """获取 GitHub 用户仓库列表"""
     try:
         result = await app_instance.crawl_github_repositories(request.username)
         
         if result:
-            # 转换为可序列化的格式
             serialized_data = DataSerializer.serialize_for_json(result)
             return APIResponse(
                 success=True,
@@ -121,7 +114,6 @@ async def get_github_events(
     event_type: str = "public",
     per_page: int = 30
 ):
-    """通过 API 获取 GitHub 用户事件"""
     try:
         result = await app_instance.get_github_events(
             username, 
@@ -152,7 +144,6 @@ async def get_repository_events(
     repo: str,
     per_page: int = 30
 ):
-    """获取 GitHub 仓库事件"""
     try:
         result = await app_instance.get_repository_events(
             owner, 

@@ -1,18 +1,13 @@
-"""
-GitHub 相关枚举定义
-"""
 from enum import StrEnum, auto
 
 
 class ModelType(StrEnum):
-    """数据模型类型枚举"""
     REPOSITORY = auto()
     USER_PROFILE = auto()
     EVENT = auto()
 
 
 class RepositoryType(StrEnum):
-    """仓库类型枚举"""
     PUBLIC = auto()
     PRIVATE = auto()
     FORK = auto()
@@ -21,7 +16,6 @@ class RepositoryType(StrEnum):
 
 
 class RepositoryLanguage(StrEnum):
-    """主要编程语言枚举"""
     PYTHON = auto()
     JAVASCRIPT = auto()
     TYPESCRIPT = auto()

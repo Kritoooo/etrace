@@ -1,42 +1,30 @@
-"""
-模型类型到抽取 Schema 的映射
-提供领域模型和抽取 Schema 之间的转换
-"""
 from typing import Type
 from .enums import ModelType
 from .extraction import (
     BaseExtractionSchema,
-    RepositoryExtractionSchema,
     UserProfileExtractionSchema
 )
 from .repository import Repository
 from .user import UserProfile
 from .event import Event
-# 移除ExtractableModel，领域模型不再有抽取功能
 
 
-# 领域模型映射
 DOMAIN_MODEL_MAP = {
     ModelType.REPOSITORY: Repository,
     ModelType.USER_PROFILE: UserProfile,
     ModelType.EVENT: Event,
 }
 
-# 抽取 Schema 映射
 EXTRACTION_SCHEMA_MAP = {
-    ModelType.REPOSITORY: RepositoryExtractionSchema,
     ModelType.USER_PROFILE: UserProfileExtractionSchema,
 }
 
-# 简化抽取 Schema 映射（用于快速抽取）
 SIMPLE_EXTRACTION_MAP = {
-    ModelType.REPOSITORY: RepositoryExtractionSchema,
     ModelType.USER_PROFILE: UserProfileExtractionSchema,
 }
 
 
 def get_domain_model(model_type: ModelType) -> Type:
-    """获取领域数据模型类"""
     if model_type not in DOMAIN_MODEL_MAP:
         raise ValueError(f"不支持的模型类型: {model_type}")
     return DOMAIN_MODEL_MAP[model_type]
