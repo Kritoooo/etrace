@@ -57,6 +57,62 @@ export const eventTypeConfigs: Record<string, EventTypeConfig> = {
     description: (payload, repo) => 
       `${payload?.action || 'Published'} release ${payload?.release?.tag_name || ''} in ${repo}`
   },
+  IssueCommentEvent: {
+    icon: "💬",
+    color: "bg-blue-400",
+    label: "Comment",
+    description: (payload, repo) => 
+      `${payload?.action || 'Added'} comment on issue #${payload?.issue?.number || ''} in ${repo}`
+  },
+  CommitCommentEvent: {
+    icon: "💭",
+    color: "bg-cyan-500",
+    label: "Commit Comment",
+    description: (payload, repo) => 
+      `Commented on commit in ${repo}`
+  },
+  PullRequestReviewEvent: {
+    icon: "🔍",
+    color: "bg-emerald-500",
+    label: "PR Review",
+    description: (payload, repo) => 
+      `${payload?.action || 'Reviewed'} pull request #${payload?.pull_request?.number || ''} in ${repo}`
+  },
+  PullRequestReviewCommentEvent: {
+    icon: "📝",
+    color: "bg-teal-500",
+    label: "PR Review Comment",
+    description: (payload, repo) => 
+      `${payload?.action || 'Added'} review comment on PR #${payload?.pull_request?.number || ''} in ${repo}`
+  },
+  GollumEvent: {
+    icon: "📚",
+    color: "bg-amber-500",
+    label: "Wiki",
+    description: (payload, repo) => 
+      `Updated wiki pages in ${repo}`
+  },
+  MemberEvent: {
+    icon: "👥",
+    color: "bg-pink-500",
+    label: "Member",
+    description: (payload, repo) => 
+      `${payload?.action || 'Added'} member to ${repo}`
+  },
+  PublicEvent: {
+    icon: "🌐",
+    color: "bg-green-600",
+    label: "Public",
+    description: (payload, repo) => 
+      `Made ${repo} public`
+  },
+  SponsorshipEvent: {
+    icon: "💖",
+    color: "bg-red-400",
+    label: "Sponsorship",
+    description: (payload, repo) => 
+      `${payload?.action || 'Updated'} sponsorship`
+  },
   default: {
     icon: "📋",
     color: "bg-gray-400",
