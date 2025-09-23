@@ -22,8 +22,9 @@ export default function Timeline({ events }: TimelineProps) {
     try {
       const date = new Date(dateString);
       return formatDistanceToNow(date, { addSuffix: true, locale: zhCN });
-    } catch {
-      return dateString;
+    } catch (error) {
+      console.error('Error formatting date:', dateString, error);
+      return 'Invalid date';
     }
   };
 
